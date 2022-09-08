@@ -10,12 +10,46 @@ const simpleInputKeyboard = (function () {
   let lettersClass;
 
   function initializeConfiguration(settings) {
-    className = 'bg-keyboard';
+    className = "bg-keyboard";
     inputs = [];
     inputNum = 0;
-    englishLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-    special = ['space', 'enter', '^', 'd'];
-    lettersClass = 'letter'
+    // englishLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    englishLetters = [
+      "Q",
+      "W",
+      "E",
+      "R",
+      "T",
+      "Y",
+      "U",
+      "I",
+      "O",
+      "P",
+      "A",
+      "S",
+      "D",
+      "F",
+      "G",
+      "H",
+      "J",
+      "K",
+      "L",
+      "^",
+      "Z",
+      "X",
+      "C",
+      "V",
+      "B",
+      "N",
+      "M",
+      "DEL",
+      "123",
+      "BG",
+      "space",
+      "return",
+    ];
+    special = ["space", "enter", "^", "d"];
+    lettersClass = "letter";
   }
 
   function getInputs() {
@@ -23,9 +57,9 @@ const simpleInputKeyboard = (function () {
   }
 
   function addEventListeners(inputs) {
-    Array.from(inputs).forEach(input => {
+    Array.from(inputs).forEach((input) => {
       if (!input.hasFocusListener) {
-        input.addEventListener('focus', (event) => showKeyBoard(event));
+        input.addEventListener("focus", (event) => showKeyBoard(event));
         input.hasFocusListener = true;
       }
     });
@@ -33,7 +67,7 @@ const simpleInputKeyboard = (function () {
 
   function showKeyBoard(event) {
     if (!event || !event.target) {
-      console.log('Problem with event');
+      console.log("Problem with event");
       return;
     }
     const currentInput = event.target;
@@ -50,39 +84,43 @@ const simpleInputKeyboard = (function () {
   }
 
   function generateKeyboardWindow(currentInput) {
-    let keyboardWindow = document.createElement('div');
-    let keyboardWindowWidth = ((currentInput.offsetWidth / 10) - 6.5) + 'rem';
-    genClass = 'bg-keyboard-' + inputNum;
+    let keyboardWindow = document.createElement("div");
+    // let keyboardWindowWidth = currentInput.offsetWidth / 10 - 6.5 + "rem";
+    let keyboardWindowWidth = "16.2rem";
+    genClass = "bg-keyboard-" + inputNum;
     // keyboardWindow.innerText = 'test' + inputNum;
-    keyboardWindow.setAttribute('class', genClass);
-    keyboardWindow.style.backgroundColor = 'green';
-    keyboardWindow.style.borderRadius = '5px';
-    keyboardWindow.style.display = 'flex';
+    keyboardWindow.setAttribute("class", genClass);
+    keyboardWindow.style.backgroundColor = "green";
+    keyboardWindow.style.borderRadius = "5px";
+    keyboardWindow.style.display = "flex";
     keyboardWindow.style.width = keyboardWindowWidth;
-    keyboardWindow.style.position = 'absolute';
-    keyboardWindow.style.top = ((currentInput.getBoundingClientRect().top + 12) / 10) + 'rem';
-    keyboardWindow.style.left = currentInput.getBoundingClientRect().left + 'px';
-    keyboardWindow.style.zIndex = '99999999999999999999999999';
+    keyboardWindow.style.position = "absolute";
+    keyboardWindow.style.textAlign = "center";
+    keyboardWindow.style.top =
+      (currentInput.getBoundingClientRect().top + 12) / 10 + "rem";
+    keyboardWindow.style.left =
+      currentInput.getBoundingClientRect().left + "px";
+    keyboardWindow.style.zIndex = "99999999999999999999999999";
     let keysContainer = generateKeyboard(keyboardWindowWidth, currentInput);
     keyboardWindow.appendChild(keysContainer);
     return keyboardWindow;
   }
 
   function generateKeyboard(width, currentInput) {
-    let container = document.createElement('div');
-    let btn = document.createElement('button');
+    let container = document.createElement("div");
+    let btn = document.createElement("button");
     container.style.width = width;
     // container.style.display = 'flex';
     // console.log(currentInput);
-    englishLetters.forEach(letter => {
+    englishLetters.forEach((letter) => {
       btn.innerText = letter;
-      btn.setAttribute('class', lettersClass);
+      btn.setAttribute("class", lettersClass);
       container.appendChild(btn);
       btn.onclick = () => {
         // console.log(currentInput);
-        currentInput.value += letter
+        currentInput.value += letter;
       };
-      btn = document.createElement('button');
+      btn = document.createElement("button");
     });
     return container;
   }
@@ -91,7 +129,7 @@ const simpleInputKeyboard = (function () {
     if (keyboardWindow) keyboardWindow.remove();
     let currentKeyboardWindow = document.getElementsByClassName(genClass);
     if (currentKeyboardWindow.length) currentKeyboardWindow[0].remove();
-  }
+  };
   // we export the centralized method for retrieving the singleton value
   return {
     setConfig: function (settings) {
@@ -105,8 +143,8 @@ const simpleInputKeyboard = (function () {
       inputs = getInputs();
       if (!inputs.length) return;
       addEventListeners(inputs);
-    }
-  }
+    },
+  };
 })();
 
 // export { simpleInputKeyboard };
