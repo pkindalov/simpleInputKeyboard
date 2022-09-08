@@ -4,6 +4,7 @@ const simpleInputKeyboard = (function () {
   let className;
   let inputs;
   let inputNum;
+  let genClass;
 
   function initializeConfiguration(settings) {
     className = 'bg-keyboard';
@@ -35,7 +36,7 @@ const simpleInputKeyboard = (function () {
     const currentInputParent = event.target.parentNode;
 
     //TODO if there is appended div container with the keyboard
-    console.log(currentInputCoords);
+    // console.log(currentInputCoords);
     // console.log(currentInputParent.getAttribute('data-hasКeyboard'));
     // console.log(currentInputParent.dataset);
     // console.log(currentInputParent.dataset.hasКeyboard);
@@ -43,28 +44,37 @@ const simpleInputKeyboard = (function () {
     //TODO to create a function which will return div container with the keyboard and to append it after the current input
 
     // if (document.getElementsByClassName(genClass).length) return;
-    if (currentInput.dataset.hasКeyboard) return;
+    // if (currentInput.dataset.hasКeyboard) return;
     inputNum++;
-    let test = document.createElement('div');
-    let genClass = 'bg-keyboard-' + inputNum;
-    test.innerText = 'test' + inputNum;
-    test.setAttribute('class', genClass);
-    test.style.backgroundColor = 'green';
-    test.style.borderRadius = '5px';
-    test.style.width = ((currentInputWidth / 10) - 6.5) + 'rem';
-    test.style.position = 'absolute';
-    test.style.top = ((currentInputCoords.top + 12) / 10) + 'rem';
+    let keyboardWindow = document.createElement('div');
+    genClass = 'bg-keyboard-' + inputNum;
+    keyboardWindow.innerText = 'test' + inputNum;
+    keyboardWindow.setAttribute('class', genClass);
+    keyboardWindow.style.backgroundColor = 'green';
+    keyboardWindow.style.borderRadius = '5px';
+    keyboardWindow.style.width = ((currentInputWidth / 10) - 6.5) + 'rem';
+    keyboardWindow.style.position = 'absolute';
+    keyboardWindow.style.top = ((currentInputCoords.top + 12) / 10) + 'rem';
     // test.style.left = ((currentInputCoords.left / 10) - 0.3) + 'rem';
-    test.style.left = currentInputCoords.left + 'px';
-    test.style.zIndex = '99999999999999999999999999';
+    keyboardWindow.style.left = currentInputCoords.left + 'px';
+    keyboardWindow.style.zIndex = '99999999999999999999999999';
     currentInput.setAttribute('data-hasКeyboard', true);
-    document.body.appendChild(test);
+    document.body.appendChild(keyboardWindow);
 
     //TODO to put blur listener, to delete keyboard window
-
+    if (!currentInput.hasBlurListener) {
+      currentInput.addEventListener('blur', () => destroyKeyboardWindow(keyboardWindow));
+      currentInput.hasBlurListener = true;
+    }
     // currentInputParent.insertBefore(test, currentInput.nextSibling);
   }
 
+  const destroyKeyboardWindow = (keyboardWindow) => {
+    if (keyboardWindow) keyboardWindow.remove();
+    let currentKeyboardWindow = document.getElementsByClassName(genClass);
+    if (currentKeyboardWindow.length) currentKeyboardWindow[0].remove();
+    // keyboardWindow.setAttribute('data-hasКeyboard', false);
+  }
   // we export the centralized method for retrieving the singleton value
   return {
     setConfig: function (settings) {
