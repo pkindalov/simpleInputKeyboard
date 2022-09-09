@@ -8,6 +8,8 @@ const simpleInputKeyboard = (function () {
   let englishLetters;
   let special;
   let lettersClass;
+  let darkMode;
+  let imgsDir;
 
   function initializeConfiguration(settings) {
     className = "bg-keyboard";
@@ -34,7 +36,7 @@ const simpleInputKeyboard = (function () {
       "J",
       "K",
       "L",
-      "^",
+      "DOWN",
       "Z",
       "X",
       "C",
@@ -45,11 +47,13 @@ const simpleInputKeyboard = (function () {
       "DEL",
       "123",
       "BG",
-      "space",
+      "SPACE",
       "return",
     ];
     special = ["space", "enter", "^", "d"];
     lettersClass = "letter";
+    darkMode = true;
+    imgsDir = './images/';
   }
 
   function getInputs() {
@@ -90,7 +94,7 @@ const simpleInputKeyboard = (function () {
     genClass = "bg-keyboard-" + inputNum;
     // keyboardWindow.innerText = 'test' + inputNum;
     keyboardWindow.setAttribute("class", genClass);
-    keyboardWindow.style.backgroundColor = "green";
+    keyboardWindow.style.backgroundColor = "black";
     keyboardWindow.style.borderRadius = "5px";
     keyboardWindow.style.display = "flex";
     keyboardWindow.style.width = keyboardWindowWidth;
@@ -109,18 +113,81 @@ const simpleInputKeyboard = (function () {
   function generateKeyboard(width, currentInput) {
     let container = document.createElement("div");
     let btn = document.createElement("button");
-    container.style.width = width;
+    let img = document.createElement("img");
+    let span = document.createElement("span");
+    let left = 2;
+    // container.style.width = width;
     // container.style.display = 'flex';
     // console.log(currentInput);
-    englishLetters.forEach((letter) => {
-      btn.innerText = letter;
+    englishLetters.forEach((letter, i) => {
+
+      if (letter === 'DEL') {
+        img.setAttribute('src', imgsDir + 'remove.png');
+        btn.style.background = 'none';
+        btn.appendChild(img);
+        container.appendChild(btn);
+        btn = document.createElement("button");
+        img = document.createElement("img");
+        return;
+      }
+
+      if (letter === 'DOWN') {
+        img.setAttribute('src', imgsDir + 'lower.png');
+        btn.style.background = 'none';
+        btn.appendChild(img);
+        btn.onclick = () => {
+          let letterDivs = document.getElementsByClassName(lettersClass);
+          Array.from(letterDivs).forEach((div, i) => {
+            div.children[1].innerText = div.children[1].innerText.toLowerCase()
+            englishLetters[i] = englishLetters[i].toLowerCase();
+          });
+          img.src = imgsDir + 'upper.png';
+
+        };
+        container.appendChild(btn);
+        btn = document.createElement("button");
+        img = document.createElement("img");
+        return;
+      }
+
+      if (letter === 'SPACE') {
+        img.setAttribute('src', imgsDir + 'space.png');
+        btn.style.background = 'none';
+        btn.appendChild(img);
+        container.appendChild(btn);
+        btn = document.createElement("button");
+        img = document.createElement("img");
+        return;
+      }
+
+
+      // btn.innerText = letter;
+      img.setAttribute('src', imgsDir + 'key.png');
+      img.setAttribute('alt', 'letter ' + letter);
+      img.style.zIndex = -1;
       btn.setAttribute("class", lettersClass);
+      btn.style.background = 'none';
+      btn.style.textAlign = 'center';
+      btn.style.position = 'relative';
+      span.innerText = letter;
+      span.style.position = 'absolute';
+      span.style.color = 'white';
+      span.style.top = '30%';
+      span.style.left = '40%';
+      span.style.fontSize = '1rem';
+      span.style.zIndex = 2;
+
+
+      btn.appendChild(img);
+      btn.appendChild(span);
       container.appendChild(btn);
       btn.onclick = () => {
-        // console.log(currentInput);
-        currentInput.value += letter;
+        // currentInput.value += letter;
+        currentInput.value += englishLetters[i];
       };
       btn = document.createElement("button");
+      img = document.createElement("img");
+      span = document.createElement("span");
     });
     return container;
   }
