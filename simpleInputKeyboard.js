@@ -117,17 +117,18 @@ const simpleInputKeyboard = (function () {
     let btn = document.createElement("button");
     let img = document.createElement("img");
     let span = document.createElement("span");
-    let left = 2;
-    // container.style.width = width;
-    // container.style.display = 'flex';
-    // console.log(currentInput);
+
     englishLetters.forEach((letter, i) => {
-      if (letter === "DEL") {
+      if (letter.toLowerCase() === "DEL".toLowerCase()) {
         img.setAttribute("src", imgsDir + "remove.png");
         img.setAttribute("id", "DEL");
         btn.style.background = "none";
         btn.appendChild(img);
-
+        btn.onclick = () => {
+          if (!currentInput.value) return;
+          const newValue = currentInput.value.slice(0, -1);
+          currentInput.value = newValue;
+        };
         container.appendChild(btn);
         btn = document.createElement("button");
         img = document.createElement("img");
