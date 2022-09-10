@@ -10,6 +10,7 @@ const simpleInputKeyboard = (function () {
   let lettersClass;
   let darkMode;
   let imgsDir;
+  let lettersCaseUPMode;
 
   function initializeConfiguration(settings) {
     className = "bg-keyboard";
@@ -53,7 +54,8 @@ const simpleInputKeyboard = (function () {
     special = ["space", "enter", "^", "d"];
     lettersClass = "letter";
     darkMode = true;
-    imgsDir = './images/';
+    imgsDir = "./images/";
+    lettersCaseUPMode = true;
   }
 
   function getInputs() {
@@ -120,29 +122,47 @@ const simpleInputKeyboard = (function () {
     // container.style.display = 'flex';
     // console.log(currentInput);
     englishLetters.forEach((letter, i) => {
-
-      if (letter === 'DEL') {
-        img.setAttribute('src', imgsDir + 'remove.png');
-        btn.style.background = 'none';
+      if (letter === "DEL") {
+        img.setAttribute("src", imgsDir + "remove.png");
+        img.setAttribute("id", "DEL");
+        btn.style.background = "none";
         btn.appendChild(img);
+
         container.appendChild(btn);
         btn = document.createElement("button");
         img = document.createElement("img");
         return;
       }
 
-      if (letter === 'DOWN') {
-        img.setAttribute('src', imgsDir + 'lower.png');
-        btn.style.background = 'none';
+      if (letter === "DOWN") {
+        img.setAttribute("src", imgsDir + "lower.png");
+        img.setAttribute("id", "DOWN");
+        btn.style.background = "none";
         btn.appendChild(img);
+        let newImg;
         btn.onclick = () => {
           let letterDivs = document.getElementsByClassName(lettersClass);
-          Array.from(letterDivs).forEach((div, i) => {
-            div.children[1].innerText = div.children[1].innerText.toLowerCase()
-            englishLetters[i] = englishLetters[i].toLowerCase();
-          });
-          img.src = imgsDir + 'upper.png';
-
+          lettersCaseUPMode = !lettersCaseUPMode;
+          if (lettersCaseUPMode) {
+            Array.from(letterDivs).forEach((div, i) => {
+              div.children[1].innerText =
+                div.children[1].innerText.toUpperCase();
+              englishLetters[i] = englishLetters[i].toUpperCase();
+            });
+            newImg = document.getElementById("DOWN");
+            newImg.src = imgsDir + "lower.png";
+          } else {
+            Array.from(letterDivs).forEach((div, i) => {
+              div.children[1].innerText =
+                div.children[1].innerText.toLowerCase();
+              englishLetters[i] = englishLetters[i].toLowerCase();
+              newImg = document.getElementById("DOWN");
+              newImg.src = imgsDir + "upper.png";
+            });
+            // img.setAttribute("src", imgsDir + "upper.png");
+            // img.src = imgsDir + "upper.png";
+            // console.log(btn.children);
+          }
         };
         container.appendChild(btn);
         btn = document.createElement("button");
@@ -150,9 +170,9 @@ const simpleInputKeyboard = (function () {
         return;
       }
 
-      if (letter === 'SPACE') {
-        img.setAttribute('src', imgsDir + 'space.png');
-        btn.style.background = 'none';
+      if (letter === "SPACE") {
+        img.setAttribute("src", imgsDir + "space.png");
+        btn.style.background = "none";
         btn.appendChild(img);
         container.appendChild(btn);
         btn = document.createElement("button");
@@ -160,23 +180,21 @@ const simpleInputKeyboard = (function () {
         return;
       }
 
-
       // btn.innerText = letter;
-      img.setAttribute('src', imgsDir + 'key.png');
-      img.setAttribute('alt', 'letter ' + letter);
+      img.setAttribute("src", imgsDir + "key.png");
+      img.setAttribute("alt", "letter " + letter);
       img.style.zIndex = -1;
       btn.setAttribute("class", lettersClass);
-      btn.style.background = 'none';
-      btn.style.textAlign = 'center';
-      btn.style.position = 'relative';
+      btn.style.background = "none";
+      btn.style.textAlign = "center";
+      btn.style.position = "relative";
       span.innerText = letter;
-      span.style.position = 'absolute';
-      span.style.color = 'white';
-      span.style.top = '30%';
-      span.style.left = '40%';
-      span.style.fontSize = '1rem';
+      span.style.position = "absolute";
+      span.style.color = "white";
+      span.style.top = "30%";
+      span.style.left = "40%";
+      span.style.fontSize = "1rem";
       span.style.zIndex = 2;
-
 
       btn.appendChild(img);
       btn.appendChild(span);
