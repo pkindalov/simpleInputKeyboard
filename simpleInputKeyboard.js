@@ -157,62 +157,17 @@ const simpleInputKeyboard = (function () {
 
     englishLetters.forEach((letter, i) => {
       if (letter.toLowerCase() === "DEL".toLowerCase()) {
-        img.setAttribute("src", imgsDir + "remove.png");
-        img.setAttribute("id", "DEL");
-        btn.style.background = "none";
-        btn.appendChild(img);
-        btn.onclick = () => {
-          if (!currentInput.value) return;
-          const newValue = currentInput.value.slice(0, -1);
-          currentInput.value = newValue;
-        };
-        container.appendChild(btn);
-        btn = document.createElement("button");
-        img = document.createElement("img");
+        addRemoveBtn(currentInput, container);
         return;
       }
 
       if (letter === "DOWN") {
-        img.setAttribute("src", imgsDir + "lower.png");
-        img.setAttribute("id", "DOWN");
-        btn.style.background = "none";
-        btn.appendChild(img);
-        let newImg;
-        btn.onclick = () => {
-          let letterDivs = document.getElementsByClassName(lettersClass);
-          lettersCaseUPMode = !lettersCaseUPMode;
-          if (lettersCaseUPMode) {
-            Array.from(letterDivs).forEach((div, i) => {
-              div.children[1].innerText =
-                div.children[1].innerText.toUpperCase();
-              englishLetters[i] = englishLetters[i].toUpperCase();
-            });
-            newImg = document.getElementById("DOWN");
-            newImg.src = imgsDir + "lower.png";
-          } else {
-            Array.from(letterDivs).forEach((div, i) => {
-              div.children[1].innerText =
-                div.children[1].innerText.toLowerCase();
-              englishLetters[i] = englishLetters[i].toLowerCase();
-              newImg = document.getElementById("DOWN");
-              newImg.src = imgsDir + "upper.png";
-            });
-          }
-        };
-        container.appendChild(btn);
-        btn = document.createElement("button");
-        img = document.createElement("img");
+        addUpDownBtn(currentInput, container);
         return;
       }
 
       if (letter === "SPACE") {
-        img.setAttribute("src", imgsDir + "space.png");
-        btn.style.background = "none";
-        btn.appendChild(img);
-        btn.onclick = () => (currentInput.value += " ");
-        container.appendChild(btn);
-        btn = document.createElement("button");
-        img = document.createElement("img");
+        addSpaceBtn(currentInput, container);
         return;
       }
 
@@ -264,6 +219,61 @@ const simpleInputKeyboard = (function () {
     });
     return container;
   }
+
+  const addRemoveBtn = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "remove.png");
+    img.setAttribute("id", "DEL");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => {
+      if (!currentInput.value) return;
+      const newValue = currentInput.value.slice(0, -1);
+      currentInput.value = newValue;
+    };
+    container.appendChild(btn);
+  };
+
+  const addUpDownBtn = (currentInput, container) => {
+    let btn = document.createElement("btn");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "lower.png");
+    img.setAttribute("id", "DOWN");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    let newImg;
+    btn.onclick = () => {
+      let letterDivs = document.getElementsByClassName(lettersClass);
+      lettersCaseUPMode = !lettersCaseUPMode;
+      if (lettersCaseUPMode) {
+        Array.from(letterDivs).forEach((div, i) => {
+          div.children[1].innerText = div.children[1].innerText.toUpperCase();
+          englishLetters[i] = englishLetters[i].toUpperCase();
+        });
+        newImg = document.getElementById("DOWN");
+        newImg.src = imgsDir + "lower.png";
+      } else {
+        Array.from(letterDivs).forEach((div, i) => {
+          div.children[1].innerText = div.children[1].innerText.toLowerCase();
+          englishLetters[i] = englishLetters[i].toLowerCase();
+          newImg = document.getElementById("DOWN");
+          newImg.src = imgsDir + "upper.png";
+        });
+      }
+    };
+    container.appendChild(btn);
+  };
+
+  const addSpaceBtn = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "space.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => (currentInput.value += " ");
+    container.appendChild(btn);
+  };
 
   const destroyKeyboardWindow = (keyboardWindow) => {
     if (keyboardWindow) keyboardWindow.remove();
