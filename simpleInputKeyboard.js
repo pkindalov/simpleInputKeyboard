@@ -126,6 +126,7 @@ const simpleInputKeyboard = (function () {
     // currentInputParent.insertBefore(test, currentInput.nextSibling);
   }
 
+  //generate the container for the letters
   function generateKeyboardWindow(currentInput) {
     let keyboardWindow = document.createElement("div");
     // let keyboardWindowWidth = currentInput.offsetWidth / 10 - 6.5 + "rem";
@@ -149,11 +150,9 @@ const simpleInputKeyboard = (function () {
     return keyboardWindow;
   }
 
+  //generate key buttons in container and return the div with the keys
   function generateKeyboard(width, currentInput) {
     let container = document.createElement("div");
-    let btn = document.createElement("button");
-    let img = document.createElement("img");
-    let span = document.createElement("span");
 
     englishLetters.forEach((letter, i) => {
       if (letter.toLowerCase() === "DEL".toLowerCase()) {
@@ -173,6 +172,11 @@ const simpleInputKeyboard = (function () {
 
       if (letter === "?123") {
         addNumsAndSymbolsBtn(currentInput, container);
+        return;
+      }
+
+      if (letter === "RETURN") {
+        addReturnBtn(currentInput, container);
         return;
       }
 
@@ -244,9 +248,21 @@ const simpleInputKeyboard = (function () {
     container.appendChild(btn);
   };
 
+  //add enter/return btn to the keyboard
+  const addReturnBtn = (currentInput, container) => {
+    const btn = document.createElement("btn");
+    const img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "returnBlue.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    // btn.onclick = () => (currentInput.value += "\n");
+    btn.onclick = () => container.remove();
+    container.appendChild(btn);
+  };
+
   //add ?123 button to keyboard. On click it must show numbers and special chars
   //on the keyboard
-  //TODO not finishet yet
+  //TODO not finished yet
   const addNumsAndSymbolsBtn = (currentInput, container) => {
     let btn = document.createElement("button");
     let img = document.createElement("img");
@@ -256,11 +272,14 @@ const simpleInputKeyboard = (function () {
     btn.onclick = () => {
       let container = document.getElementsByClassName(genClass);
       if (container.length) container[0].innerHTML = "";
-      let btn = document.createElement("button");
-      btn.innerText = "test";
-      btn.onclick = () => alert("test");
-      container[0].append(btn);
-      console.log(container);
+      numbersAndSymbols.forEach((numOrSym) => {
+        console.log(numOrSym);
+      });
+      // let btn = document.createElement("button");
+      // btn.innerText = "test";
+      // btn.onclick = () => alert("test");
+      // container[0].append(btn);
+      // console.log(container);
     };
     container.appendChild(btn);
   };
