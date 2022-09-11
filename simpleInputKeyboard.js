@@ -47,7 +47,7 @@ const simpleInputKeyboard = (function () {
       "N",
       "M",
       "DEL",
-      "123",
+      "?123",
       "BG",
       "SPACE",
       "RETURN",
@@ -171,55 +171,22 @@ const simpleInputKeyboard = (function () {
         return;
       }
 
-      if (letter === "123") {
-        img.setAttribute("src", imgsDir + "123.png");
-        btn.style.background = "none";
-        btn.appendChild(img);
-        btn.onclick = () => {
-          let container = document.getElementsByClassName(genClass);
-          if (container.length) container[0].innerHTML = "";
-          let btn = document.createElement("button");
-          btn.innerText = "test";
-          btn.onclick = () => alert("test");
-          container[0].append(btn);
-          console.log(container);
-        };
-        container.appendChild(btn);
-        btn = document.createElement("button");
-        img = document.createElement("img");
+      if (letter === "?123") {
+        addNumsAndSymbolsBtn(currentInput, container);
         return;
       }
 
-      // btn.innerText = letter;
-      img.setAttribute("src", imgsDir + "key.png");
-      img.setAttribute("alt", "letter " + letter);
-      img.style.zIndex = -1;
-      btn.setAttribute("class", lettersClass);
-      btn.style.background = "none";
-      btn.style.textAlign = "center";
-      btn.style.position = "relative";
-      span.innerText = letter;
-      span.style.position = "absolute";
-      span.style.color = "white";
-      span.style.top = "30%";
-      span.style.left = "40%";
-      span.style.fontSize = "1rem";
-      span.style.zIndex = 2;
-
-      btn.appendChild(img);
-      btn.appendChild(span);
-      container.appendChild(btn);
-      btn.onclick = () => {
-        // currentInput.value += letter;
-        currentInput.value += englishLetters[i];
-      };
-      btn = document.createElement("button");
-      img = document.createElement("img");
-      span = document.createElement("span");
+      addLetterBtn({
+        currentInput: currentInput,
+        container: container,
+        letter: letter,
+        letterIndex: i,
+      });
     });
     return container;
   }
 
+  //add button for removing the last entered char by the user
   const addRemoveBtn = (currentInput, container) => {
     let btn = document.createElement("button");
     let img = document.createElement("img");
@@ -235,6 +202,7 @@ const simpleInputKeyboard = (function () {
     container.appendChild(btn);
   };
 
+  //add button with the arrow icon to change letters in upper or lower case
   const addUpDownBtn = (currentInput, container) => {
     let btn = document.createElement("btn");
     let img = document.createElement("img");
@@ -265,6 +233,7 @@ const simpleInputKeyboard = (function () {
     container.appendChild(btn);
   };
 
+  //add space button on the keyboard
   const addSpaceBtn = (currentInput, container) => {
     let btn = document.createElement("button");
     let img = document.createElement("img");
@@ -273,6 +242,56 @@ const simpleInputKeyboard = (function () {
     btn.appendChild(img);
     btn.onclick = () => (currentInput.value += " ");
     container.appendChild(btn);
+  };
+
+  //add ?123 button to keyboard. On click it must show numbers and special chars
+  //on the keyboard
+  //TODO not finishet yet
+  const addNumsAndSymbolsBtn = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "123.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => {
+      let container = document.getElementsByClassName(genClass);
+      if (container.length) container[0].innerHTML = "";
+      let btn = document.createElement("button");
+      btn.innerText = "test";
+      btn.onclick = () => alert("test");
+      container[0].append(btn);
+      console.log(container);
+    };
+    container.appendChild(btn);
+  };
+
+  //add letter button to keyboard
+  const addLetterBtn = (data) => {
+    const { currentInput, container, letter, letterIndex } = data;
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    let span = document.createElement("span");
+    img.setAttribute("src", imgsDir + "key.png");
+    img.setAttribute("alt", "letter " + letter);
+    img.style.zIndex = -1;
+    btn.setAttribute("class", lettersClass);
+    btn.style.background = "none";
+    btn.style.textAlign = "center";
+    btn.style.position = "relative";
+    span.innerText = letter;
+    span.style.position = "absolute";
+    span.style.color = "white";
+    span.style.top = "30%";
+    span.style.left = "40%";
+    span.style.fontSize = "1rem";
+    span.style.zIndex = 2;
+
+    btn.appendChild(img);
+    btn.appendChild(span);
+    container.appendChild(btn);
+    btn.onclick = () => {
+      currentInput.value += englishLetters[letterIndex];
+    };
   };
 
   const destroyKeyboardWindow = (keyboardWindow) => {
