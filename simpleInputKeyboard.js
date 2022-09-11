@@ -185,6 +185,7 @@ const simpleInputKeyboard = (function () {
         container: container,
         letter: letter,
         letterIndex: i,
+        source: englishLetters,
       });
     });
     return container;
@@ -270,11 +271,19 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.appendChild(img);
     btn.onclick = () => {
-      let container = document.getElementsByClassName(genClass);
-      if (container.length) container[0].innerHTML = "";
-      numbersAndSymbols.forEach((numOrSym) => {
-        console.log(numOrSym);
+      // let container = document.getElementsByClassName(genClass);
+      // if (container.length) container[0].innerHTML = "";
+      container.innerHTML = "";
+      numbersAndSymbols.forEach((letter, i) => {
+        addLetterBtn({
+          currentInput: currentInput,
+          container: container,
+          letter: letter,
+          letterIndex: i,
+          source: numbersAndSymbols,
+        });
       });
+      console.log(container[0]);
       // let btn = document.createElement("button");
       // btn.innerText = "test";
       // btn.onclick = () => alert("test");
@@ -286,7 +295,7 @@ const simpleInputKeyboard = (function () {
 
   //add letter button to keyboard
   const addLetterBtn = (data) => {
-    const { currentInput, container, letter, letterIndex } = data;
+    const { currentInput, container, letter, letterIndex, source } = data;
     let btn = document.createElement("button");
     let img = document.createElement("img");
     let span = document.createElement("span");
@@ -309,7 +318,7 @@ const simpleInputKeyboard = (function () {
     btn.appendChild(span);
     container.appendChild(btn);
     btn.onclick = () => {
-      currentInput.value += englishLetters[letterIndex];
+      currentInput.value += source[letterIndex];
     };
   };
 
