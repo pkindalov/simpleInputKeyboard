@@ -11,6 +11,7 @@ const simpleInputKeyboard = (function () {
   let darkMode;
   let imgsDir;
   let lettersCaseUPMode;
+  let numbersAndSymbols;
 
   function initializeConfiguration(settings) {
     className = "bg-keyboard";
@@ -49,13 +50,49 @@ const simpleInputKeyboard = (function () {
       "123",
       "BG",
       "SPACE",
-      "return",
+      "RETURN",
     ];
     special = ["space", "enter", "^", "d"];
     lettersClass = "letter";
     darkMode = true;
     imgsDir = "./images/";
     lettersCaseUPMode = true;
+    numbersAndSymbols = [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      "@",
+      "#",
+      "$",
+      "_",
+      "&",
+      "-",
+      "+",
+      "(",
+      ")",
+      "/",
+      "=\\<",
+      "*",
+      '"',
+      "'",
+      ":",
+      ";",
+      "!",
+      "?",
+      "DEL",
+      "ABC",
+      ",",
+      "SPACE",
+      ".",
+      "RETURN",
+    ];
   }
 
   function getInputs() {
@@ -160,9 +197,6 @@ const simpleInputKeyboard = (function () {
               newImg = document.getElementById("DOWN");
               newImg.src = imgsDir + "upper.png";
             });
-            // img.setAttribute("src", imgsDir + "upper.png");
-            // img.src = imgsDir + "upper.png";
-            // console.log(btn.children);
           }
         };
         container.appendChild(btn);
@@ -175,6 +209,26 @@ const simpleInputKeyboard = (function () {
         img.setAttribute("src", imgsDir + "space.png");
         btn.style.background = "none";
         btn.appendChild(img);
+        btn.onclick = () => (currentInput.value += " ");
+        container.appendChild(btn);
+        btn = document.createElement("button");
+        img = document.createElement("img");
+        return;
+      }
+
+      if (letter === "123") {
+        img.setAttribute("src", imgsDir + "123.png");
+        btn.style.background = "none";
+        btn.appendChild(img);
+        btn.onclick = () => {
+          let container = document.getElementsByClassName(genClass);
+          if (container.length) container[0].innerHTML = "";
+          let btn = document.createElement("button");
+          btn.innerText = "test";
+          btn.onclick = () => alert("test");
+          container[0].append(btn);
+          console.log(container);
+        };
         container.appendChild(btn);
         btn = document.createElement("button");
         img = document.createElement("img");
