@@ -17,7 +17,6 @@ const simpleInputKeyboard = (function () {
     className = "bg-keyboard";
     inputs = [];
     inputNum = 0;
-    // englishLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
     englishLetters = [
       "Q",
       "W",
@@ -95,9 +94,7 @@ const simpleInputKeyboard = (function () {
     ];
   }
 
-  function getInputs() {
-    return document.getElementsByClassName(className);
-  }
+  const getInputs = () => document.getElementsByClassName(className);
 
   function addEventListeners(inputs) {
     Array.from(inputs).forEach((input) => {
@@ -153,42 +150,39 @@ const simpleInputKeyboard = (function () {
   //generate key buttons in container and return the div with the keys
   function generateKeyboard(width, currentInput) {
     let container = document.createElement("div");
-
-    englishLetters.forEach((letter, i) => {
-      if (letter.toLowerCase() === "DEL".toLowerCase()) {
-        addRemoveBtn(currentInput, container);
-        return;
-      }
-
-      if (letter === "DOWN") {
-        addUpDownBtn(currentInput, container);
-        return;
-      }
-
-      if (letter === "SPACE") {
-        addSpaceBtn(currentInput, container);
-        return;
-      }
-
-      if (letter === "?123") {
-        addNumsAndSymbolsBtn(currentInput, container);
-        return;
-      }
-
-      if (letter === "RETURN") {
-        addReturnBtn(currentInput, container);
-        return;
-      }
-
-      addLetterBtn({
-        currentInput: currentInput,
-        container: container,
-        letter: letter,
-        letterIndex: i,
-        source: englishLetters,
-      });
+    englishLetters.forEach((text, i) => {
+      addButtonOperation({ "text": text, "el": currentInput, "container": container, "index": i, "source": englishLetters });
     });
     return container;
+  }
+
+  const addButtonOperation = (data) => {
+    const { text, el, container, index, source } = data;
+    switch (text) {
+      case 'DEL':
+        addRemoveBtn(el, container);
+        return;
+      case 'DOWN':
+        addUpDownBtn(el, container);
+        return;
+      case 'SPACE':
+        addSpaceBtn(el, container);
+        return;
+      case '?123':
+        addNumsAndSymbolsBtn(el, container);
+        return;
+      case 'RETURN':
+        addReturnBtn(el, container);
+        return;
+      default:
+        addLetterBtn({
+          currentInput: el,
+          container: container,
+          letter: text,
+          letterIndex: index,
+          source: source,
+        });
+    }
   }
 
   //add button for removing the last entered char by the user
@@ -274,14 +268,15 @@ const simpleInputKeyboard = (function () {
       // let container = document.getElementsByClassName(genClass);
       // if (container.length) container[0].innerHTML = "";
       container.innerHTML = "";
-      numbersAndSymbols.forEach((letter, i) => {
-        addLetterBtn({
-          currentInput: currentInput,
-          container: container,
-          letter: letter,
-          letterIndex: i,
-          source: numbersAndSymbols,
-        });
+      numbersAndSymbols.forEach((text, i) => {
+        addButtonOperation({ "text": text, "el": currentInput, "container": container, "index": i, "source": numbersAndSymbols });
+        // addLetterBtn({
+        //   currentInput: currentInput,
+        //   container: container,
+        //   letter: letter,
+        //   letterIndex: i,
+        //   source: numbersAndSymbols,
+        // });
       });
       console.log(container[0]);
       // let btn = document.createElement("button");
