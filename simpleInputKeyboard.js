@@ -263,11 +263,13 @@ const simpleInputKeyboard = (function () {
     btn.onclick = () => {
       btn.dataset.isUpper = btn.dataset.isUpper === '0' ? '1' : '0';
       if (btn.dataset.isUpper === '1') {
-        makeKeysLowerCase(container.children);
+        // makeKeysLowerCase(container.children);
+        transformKeys(container.children, "lowercase");
         newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
         newImg.src = imgsDir + "upper.png";
       } else {
-        makeKeysUpperCase(container.children);
+        // makeKeysUpperCase(container.children);
+        transformKeys(container.children, "uppercase");
         newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
         newImg.src = imgsDir + "lower.png";
       }
@@ -275,22 +277,12 @@ const simpleInputKeyboard = (function () {
     container.appendChild(btn);
   };
 
-  const makeKeysLowerCase = (arr) => {
+  const transformKeys = (arr, command) => {
     if (!arr.length) return;
     Array.from(arr).forEach((letterBtn, i) => {
       const buttonTextContent = letterBtn?.children[1]?.innerText;
       if (buttonTextContent) {
-        letterBtn.children[1].innerText = letterBtn.children[1].innerText.toLowerCase();
-      }
-    });
-  }
-
-  const makeKeysUpperCase = (arr) => {
-    if (!arr.length) return;
-    Array.from(arr).forEach((letterBtn, i) => {
-      const buttonTextContent = letterBtn?.children[1]?.innerText;
-      if (buttonTextContent) {
-        letterBtn.children[1].innerText = letterBtn.children[1].innerText.toUpperCase();
+        letterBtn.children[1].innerText = (command === "uppercase") ? letterBtn.children[1].innerText.toUpperCase() : letterBtn.children[1].innerText.toLowerCase();
       }
     });
   }
