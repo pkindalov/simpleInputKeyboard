@@ -221,6 +221,9 @@ const simpleInputKeyboard = (function () {
       case "BG":
         addBulgarianKeayboard(el, container);
         return;
+      case "EN":
+        addEnglishKeayboard(el, container);
+        return;
       case "RETURN":
         addReturnBtn(el, container);
         return;
@@ -263,12 +266,10 @@ const simpleInputKeyboard = (function () {
     btn.onclick = () => {
       btn.dataset.isUpper = btn.dataset.isUpper === '0' ? '1' : '0';
       if (btn.dataset.isUpper === '1') {
-        // makeKeysLowerCase(container.children);
         transformKeys(container.children, "lowercase");
         newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
         newImg.src = imgsDir + "upper.png";
       } else {
-        // makeKeysUpperCase(container.children);
         transformKeys(container.children, "uppercase");
         newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
         newImg.src = imgsDir + "lower.png";
@@ -312,7 +313,6 @@ const simpleInputKeyboard = (function () {
 
   //add ?123 button to keyboard. On click it must show numbers and special chars
   //on the keyboard
-  //TODO not finished yet
   const addNumsAndSymbolsBtn = (currentInput, container) => {
     let btn = document.createElement("button");
     let img = document.createElement("img");
@@ -338,15 +338,11 @@ const simpleInputKeyboard = (function () {
 
   const addBulgarianKeayboard = (currentInput, container) => {
     let btn = document.createElement("button");
-    // btn.innerText = 'BG';
     let img = document.createElement("img");
     img.setAttribute("src", imgsDir + "key.png");
     btn.style.background = "none";
     btn.appendChild(img);
     btn.onclick = () => {
-      isBgMode = true;
-      // let container = document.getElementsByClassName(genClass);
-      // if (container.length) container[0].innerHTML = "";
       container.innerHTML = "";
       bulgarianLetters.forEach((text, i) => {
         addButtonOperation({
@@ -355,6 +351,27 @@ const simpleInputKeyboard = (function () {
           container: container,
           index: i,
           source: bulgarianLetters,
+        });
+      });
+    };
+    container.appendChild(btn);
+  }
+
+  const addEnglishKeayboard = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "key.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => {
+      container.innerHTML = "";
+      englishLetters.forEach((text, i) => {
+        addButtonOperation({
+          text: text,
+          el: currentInput,
+          container: container,
+          index: i,
+          source: englishLetters,
         });
       });
     };
