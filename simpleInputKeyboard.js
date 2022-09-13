@@ -6,7 +6,8 @@ const simpleInputKeyboard = (function () {
   let inputNum;
   let genClass;
   let englishLetters;
-  let special;
+  let bulgarianLetters;
+  let isBgMode;
   let lettersClass;
   let darkMode;
   let imgsDir;
@@ -14,7 +15,7 @@ const simpleInputKeyboard = (function () {
   let numbersAndSymbols;
 
   function initializeConfiguration(settings) {
-    className = "bg-keyboard";
+    className = "keyboard";
     inputs = [];
     inputNum = 0;
     englishLetters = [
@@ -51,8 +52,47 @@ const simpleInputKeyboard = (function () {
       "SPACE",
       "RETURN",
     ];
-    special = ["space", "enter", "^", "d"];
-    lettersClass = "letter";
+    bulgarianLetters = [
+      "Я",
+      "В",
+      "Е",
+      "Р",
+      "Т",
+      "Ъ",
+      "У",
+      "И",
+      "О",
+      "П",
+      "Ч",
+      "А",
+      "С",
+      "Д",
+      "Ф",
+      "Г",
+      "Х",
+      "Й",
+      "К",
+      "Л",
+      "Ш",
+      "Щ",
+      "DOWN",
+      "З",
+      "Ь",
+      "Ц",
+      "Ж",
+      "Б",
+      "Н",
+      "М",
+      "Ю",
+      "DEL",
+      "?123",
+      "EN",
+      "SPACE",
+      ".",
+      "RETURN",
+    ];
+    isBgMode = false;
+    lettersClass = "letter-keyboard-";
     darkMode = true;
     imgsDir = "./images/";
     lettersCaseUPMode = true;
@@ -115,7 +155,7 @@ const simpleInputKeyboard = (function () {
     let keyboardWindow = generateKeyboardWindow(currentInput);
     document.body.appendChild(keyboardWindow);
 
-    //TODO to put blur listener, to delete keyboard window
+    //to put blur listener, to delete keyboard window
     if (!currentInput.hasBlurListener) {
       // currentInput.addEventListener('blur', () => destroyKeyboardWindow(keyboardWindow));
       currentInput.hasBlurListener = true;
@@ -128,7 +168,7 @@ const simpleInputKeyboard = (function () {
     let keyboardWindow = document.createElement("div");
     // let keyboardWindowWidth = currentInput.offsetWidth / 10 - 6.5 + "rem";
     let keyboardWindowWidth = "16.2rem";
-    genClass = "bg-keyboard-" + inputNum;
+    genClass = "keyboard-" + inputNum;
     // keyboardWindow.innerText = 'test' + inputNum;
     keyboardWindow.setAttribute("class", genClass);
     keyboardWindow.style.backgroundColor = "black";
@@ -150,8 +190,15 @@ const simpleInputKeyboard = (function () {
   //generate key buttons in container and return the div with the keys
   function generateKeyboard(width, currentInput) {
     let container = document.createElement("div");
+    container.setAttribute('id', 'keys-cont-keyboard-' + inputNum);
     englishLetters.forEach((text, i) => {
-      addButtonOperation({ "text": text, "el": currentInput, "container": container, "index": i, "source": englishLetters });
+      addButtonOperation({
+        text: text,
+        el: currentInput,
+        container: container,
+        index: i,
+        source: englishLetters,
+      });
     });
     return container;
   }
@@ -159,19 +206,22 @@ const simpleInputKeyboard = (function () {
   const addButtonOperation = (data) => {
     const { text, el, container, index, source } = data;
     switch (text) {
-      case 'DEL':
+      case "DEL":
         addRemoveBtn(el, container);
         return;
-      case 'DOWN':
+      case "DOWN":
         addUpDownBtn(el, container);
         return;
-      case 'SPACE':
+      case "SPACE":
         addSpaceBtn(el, container);
         return;
-      case '?123':
+      case "?123":
         addNumsAndSymbolsBtn(el, container);
         return;
-      case 'RETURN':
+      case "BG":
+        addBulgarianKeayboard(el, container);
+        return;
+      case "RETURN":
         addReturnBtn(el, container);
         return;
       default:
@@ -179,11 +229,9 @@ const simpleInputKeyboard = (function () {
           currentInput: el,
           container: container,
           letter: text,
-          letterIndex: index,
-          source: source,
         });
     }
-  }
+  };
 
   //add button for removing the last entered char by the user
   const addRemoveBtn = (currentInput, container) => {
@@ -203,34 +251,49 @@ const simpleInputKeyboard = (function () {
 
   //add button with the arrow icon to change letters in upper or lower case
   const addUpDownBtn = (currentInput, container) => {
-    let btn = document.createElement("btn");
+    let btn = document.createElement("button");
     let img = document.createElement("img");
     img.setAttribute("src", imgsDir + "lower.png");
-    img.setAttribute("id", "DOWN");
+    img.setAttribute("id", "DOWN-" + container.getAttribute('id'));
     btn.style.background = "none";
+    btn.setAttribute('data-is-upper', '0');
     btn.appendChild(img);
     let newImg;
+
     btn.onclick = () => {
-      let letterDivs = document.getElementsByClassName(lettersClass);
-      lettersCaseUPMode = !lettersCaseUPMode;
-      if (lettersCaseUPMode) {
-        Array.from(letterDivs).forEach((div, i) => {
-          div.children[1].innerText = div.children[1].innerText.toUpperCase();
-          englishLetters[i] = englishLetters[i].toUpperCase();
-        });
-        newImg = document.getElementById("DOWN");
-        newImg.src = imgsDir + "lower.png";
+      btn.dataset.isUpper = btn.dataset.isUpper === '0' ? '1' : '0';
+      if (btn.dataset.isUpper === '1') {
+        makeKeysLowerCase(container.children);
+        newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
+        newImg.src = imgsDir + "upper.png";
       } else {
-        Array.from(letterDivs).forEach((div, i) => {
-          div.children[1].innerText = div.children[1].innerText.toLowerCase();
-          englishLetters[i] = englishLetters[i].toLowerCase();
-          newImg = document.getElementById("DOWN");
-          newImg.src = imgsDir + "upper.png";
-        });
+        makeKeysUpperCase(container.children);
+        newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
+        newImg.src = imgsDir + "lower.png";
       }
     };
     container.appendChild(btn);
   };
+
+  const makeKeysLowerCase = (arr) => {
+    if (!arr.length) return;
+    Array.from(arr).forEach((letterBtn, i) => {
+      const buttonTextContent = letterBtn?.children[1]?.innerText;
+      if (buttonTextContent) {
+        letterBtn.children[1].innerText = letterBtn.children[1].innerText.toLowerCase();
+      }
+    });
+  }
+
+  const makeKeysUpperCase = (arr) => {
+    if (!arr.length) return;
+    Array.from(arr).forEach((letterBtn, i) => {
+      const buttonTextContent = letterBtn?.children[1]?.innerText;
+      if (buttonTextContent) {
+        letterBtn.children[1].innerText = letterBtn.children[1].innerText.toUpperCase();
+      }
+    });
+  }
 
   //add space button on the keyboard
   const addSpaceBtn = (currentInput, container) => {
@@ -245,7 +308,7 @@ const simpleInputKeyboard = (function () {
 
   //add enter/return btn to the keyboard
   const addReturnBtn = (currentInput, container) => {
-    const btn = document.createElement("btn");
+    const btn = document.createElement("button");
     const img = document.createElement("img");
     img.setAttribute("src", imgsDir + "returnBlue.png");
     btn.style.background = "none";
@@ -269,35 +332,53 @@ const simpleInputKeyboard = (function () {
       // if (container.length) container[0].innerHTML = "";
       container.innerHTML = "";
       numbersAndSymbols.forEach((text, i) => {
-        addButtonOperation({ "text": text, "el": currentInput, "container": container, "index": i, "source": numbersAndSymbols });
-        // addLetterBtn({
-        //   currentInput: currentInput,
-        //   container: container,
-        //   letter: letter,
-        //   letterIndex: i,
-        //   source: numbersAndSymbols,
-        // });
+        addButtonOperation({
+          text: text,
+          el: currentInput,
+          container: container,
+          index: i,
+          source: numbersAndSymbols,
+        });
       });
-      console.log(container[0]);
-      // let btn = document.createElement("button");
-      // btn.innerText = "test";
-      // btn.onclick = () => alert("test");
-      // container[0].append(btn);
-      // console.log(container);
     };
     container.appendChild(btn);
   };
 
+  const addBulgarianKeayboard = (currentInput, container) => {
+    let btn = document.createElement("button");
+    // btn.innerText = 'BG';
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "key.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => {
+      isBgMode = true;
+      // let container = document.getElementsByClassName(genClass);
+      // if (container.length) container[0].innerHTML = "";
+      container.innerHTML = "";
+      bulgarianLetters.forEach((text, i) => {
+        addButtonOperation({
+          text: text,
+          el: currentInput,
+          container: container,
+          index: i,
+          source: bulgarianLetters,
+        });
+      });
+    };
+    container.appendChild(btn);
+  }
+
   //add letter button to keyboard
   const addLetterBtn = (data) => {
-    const { currentInput, container, letter, letterIndex, source } = data;
+    const { currentInput, container, letter } = data;
     let btn = document.createElement("button");
     let img = document.createElement("img");
     let span = document.createElement("span");
     img.setAttribute("src", imgsDir + "key.png");
-    img.setAttribute("alt", "letter " + letter);
+    img.setAttribute("alt", "letter-" + letter);
     img.style.zIndex = -1;
-    btn.setAttribute("class", lettersClass);
+    btn.setAttribute("class", lettersClass + inputNum);
     btn.style.background = "none";
     btn.style.textAlign = "center";
     btn.style.position = "relative";
@@ -313,7 +394,7 @@ const simpleInputKeyboard = (function () {
     btn.appendChild(span);
     container.appendChild(btn);
     btn.onclick = () => {
-      currentInput.value += source[letterIndex];
+      currentInput.value += btn.innerText;
     };
   };
 
