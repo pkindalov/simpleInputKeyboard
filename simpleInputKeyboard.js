@@ -399,7 +399,6 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.style.textAlign = "center";
     btn.style.position = "relative";
-    span.innerText = lettersCaseUPMode === true ? letter.toUpperCase() : letter.toLowerCase();
     span.style.position = "absolute";
     span.style.color = "white";
     span.style.top = "30%";
@@ -413,6 +412,11 @@ const simpleInputKeyboard = (function () {
     btn.onclick = () => {
       currentInput.value += btn.innerText;
     };
+    if (letter && isNaN(letter)) {
+      span.innerText = lettersCaseUPMode === true ? letter.toUpperCase() : letter.toLowerCase()
+      return;
+    }
+    span.innerText = letter;
   };
 
   const destroyKeyboardWindow = (keyboardWindow) => {
