@@ -4,18 +4,26 @@ const simpleInputKeyboard = (function () {
   let className;
   let inputs;
   let inputNum;
-  let genClass;
+  let isDisabled;
+  let mainFlexContClass;
   let englishLetters;
   let bulgarianLetters;
-  let isBgMode;
   let lettersClass;
   let darkMode;
   let imgsDir;
   let lettersCaseUPMode;
   let numbersAndSymbols;
 
-  function initializeConfiguration(settings) {
-    className = "keyboard";
+  function initializeConfiguration(settings = {}) {
+    let { clsName = 'keyboard',
+      disableInput = false,
+      darkTheme = true,
+      imagesDir = "./images/",
+      classNameOfLetters = "letter-keyboard-",
+      lettersUppercase = true,
+    } = settings;
+    // className = "keyboard";
+    className = clsName;
     inputs = [];
     inputNum = 0;
     englishLetters = [
@@ -91,11 +99,10 @@ const simpleInputKeyboard = (function () {
       ".",
       "RETURN",
     ];
-    isBgMode = false;
-    lettersClass = "letter-keyboard-";
-    darkMode = true;
-    imgsDir = "./images/";
-    lettersCaseUPMode = true;
+    lettersClass = classNameOfLetters;
+    darkMode = darkTheme;
+    imgsDir = imagesDir;
+    lettersCaseUPMode = lettersUppercase;
     numbersAndSymbols = [
       0,
       1,
@@ -132,6 +139,7 @@ const simpleInputKeyboard = (function () {
       ".",
       "RETURN",
     ];
+    isDisabled = disableInput;
   }
 
   const getInputs = () => document.getElementsByClassName(className);
@@ -151,6 +159,7 @@ const simpleInputKeyboard = (function () {
       return;
     }
     const currentInput = event.target;
+    if (isDisabled) currentInput.setAttribute('disabled', true);
     inputNum++;
     let keyboardWindow = generateKeyboardWindow(currentInput);
     document.body.appendChild(keyboardWindow);
@@ -168,9 +177,9 @@ const simpleInputKeyboard = (function () {
     let keyboardWindow = document.createElement("div");
     // let keyboardWindowWidth = currentInput.offsetWidth / 10 - 6.5 + "rem";
     let keyboardWindowWidth = "16.2rem";
-    genClass = "keyboard-" + inputNum;
+    mainFlexContClass = "keyboard-" + inputNum;
     // keyboardWindow.innerText = 'test' + inputNum;
-    keyboardWindow.setAttribute("class", genClass);
+    keyboardWindow.setAttribute("class", mainFlexContClass);
     keyboardWindow.style.backgroundColor = "black";
     keyboardWindow.style.borderRadius = "5px";
     keyboardWindow.style.display = "flex";
@@ -256,10 +265,11 @@ const simpleInputKeyboard = (function () {
   const addUpDownBtn = (currentInput, container) => {
     let btn = document.createElement("button");
     let img = document.createElement("img");
-    img.setAttribute("src", imgsDir + "lower.png");
+    lettersCaseUPMode ? img.setAttribute("src", imgsDir + "lower.png") : img.setAttribute("src", imgsDir + "upper.png");
+    // img.setAttribute("src", imgsDir + "lower.png");
     img.setAttribute("id", "DOWN-" + container.getAttribute('id'));
     btn.style.background = "none";
-    btn.setAttribute('data-is-upper', '0');
+    btn.setAttribute('data-is-upper', lettersCaseUPMode ? '0' : '1');
     btn.appendChild(img);
     let newImg;
 
@@ -320,8 +330,6 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.appendChild(img);
     btn.onclick = () => {
-      // let container = document.getElementsByClassName(genClass);
-      // if (container.length) container[0].innerHTML = "";
       container.innerHTML = "";
       numbersAndSymbols.forEach((text, i) => {
         addButtonOperation({
@@ -391,7 +399,7 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.style.textAlign = "center";
     btn.style.position = "relative";
-    span.innerText = letter;
+    span.innerText = lettersCaseUPMode === true ? letter.toUpperCase() : letter.toLowerCase();
     span.style.position = "absolute";
     span.style.color = "white";
     span.style.top = "30%";
@@ -409,7 +417,7 @@ const simpleInputKeyboard = (function () {
 
   const destroyKeyboardWindow = (keyboardWindow) => {
     if (keyboardWindow) keyboardWindow.remove();
-    let currentKeyboardWindow = document.getElementsByClassName(genClass);
+    let currentKeyboardWindow = document.getElementsByClassName(mainFlexContClass);
     if (currentKeyboardWindow.length) currentKeyboardWindow[0].remove();
   };
   // we export the centralized method for retrieving the singleton value
