@@ -148,6 +148,7 @@ const simpleInputKeyboard = (function () {
     Array.from(inputs).forEach((input) => {
       if (!input.hasFocusListener) {
         input.addEventListener("focus", (event) => showKeyBoard(event));
+        input.setAttribute('data-mode-uppercase', lettersCaseUPMode ? '1' : '0');
         input.hasFocusListener = true;
       }
     });
@@ -266,23 +267,21 @@ const simpleInputKeyboard = (function () {
     let btn = document.createElement("button");
     let img = document.createElement("img");
     lettersCaseUPMode ? img.setAttribute("src", imgsDir + "lower.png") : img.setAttribute("src", imgsDir + "upper.png");
-    // img.setAttribute("src", imgsDir + "lower.png");
     img.setAttribute("id", "DOWN-" + container.getAttribute('id'));
     btn.style.background = "none";
-    btn.setAttribute('data-is-upper', lettersCaseUPMode ? '0' : '1');
     btn.appendChild(img);
     let newImg;
 
     btn.onclick = () => {
-      btn.dataset.isUpper = btn.dataset.isUpper === '0' ? '1' : '0';
-      if (btn.dataset.isUpper === '1') {
-        transformKeys(container.children, "lowercase");
-        newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
-        newImg.src = imgsDir + "upper.png";
-      } else {
+      currentInput.dataset.modeUppercase = currentInput.dataset.modeUppercase === '0' ? '1' : '0';
+      if (currentInput.dataset.modeUppercase === '1') {
         transformKeys(container.children, "uppercase");
         newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
         newImg.src = imgsDir + "lower.png";
+      } else {
+        transformKeys(container.children, "lowercase");
+        newImg = document.getElementById("DOWN-" + container.getAttribute('id'));
+        newImg.src = imgsDir + "upper.png";
       }
     };
     container.appendChild(btn);
