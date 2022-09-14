@@ -459,7 +459,7 @@ const simpleInputKeyboard = (function () {
       currentInput.value += btn.innerText;
     };
     if (letter && isNaN(letter)) {
-      span.innerText = lettersCaseUPMode === true ? letter.toUpperCase() : letter.toLowerCase()
+      span.innerText = currentInput.dataset.modeUppercase === "1" ? letter.toUpperCase() : letter.toLowerCase()
       return;
     }
     span.innerText = letter;
