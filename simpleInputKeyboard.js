@@ -13,6 +13,7 @@ const simpleInputKeyboard = (function () {
   let imgsDir;
   let lettersCaseUPMode;
   let numbersAndSymbols;
+  let language;
 
   function initializeConfiguration(settings = {}) {
     let { clsName = 'keyboard',
@@ -21,6 +22,7 @@ const simpleInputKeyboard = (function () {
       imagesDir = "./images/",
       classNameOfLetters = "letter-keyboard-",
       lettersUppercase = true,
+      lang = 'EN' //currently only english and bulgarian
     } = settings;
     // className = "keyboard";
     className = clsName;
@@ -140,6 +142,7 @@ const simpleInputKeyboard = (function () {
       "RETURN",
     ];
     isDisabled = disableInput;
+    language = lang;
   }
 
   const getInputs = () => document.getElementsByClassName(className);
@@ -149,6 +152,7 @@ const simpleInputKeyboard = (function () {
       if (!input.hasFocusListener) {
         input.addEventListener("focus", (event) => showKeyBoard(event));
         input.setAttribute('data-mode-uppercase', lettersCaseUPMode ? '1' : '0');
+        input.setAttribute('data-mode-lang', language);
         input.hasFocusListener = true;
       }
     });
@@ -233,6 +237,9 @@ const simpleInputKeyboard = (function () {
         return;
       case "EN":
         addEnglishKeayboard(el, container);
+        return;
+      case 'ABC':
+        turnLetterKeyboard(el, container);
         return;
       case "RETURN":
         addReturnBtn(el, container);
@@ -350,6 +357,7 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.appendChild(img);
     btn.onclick = () => {
+      currentInput.dataset.modeLang = 'BG';
       container.innerHTML = "";
       bulgarianLetters.forEach((text, i) => {
         addButtonOperation({
@@ -371,6 +379,7 @@ const simpleInputKeyboard = (function () {
     btn.style.background = "none";
     btn.appendChild(img);
     btn.onclick = () => {
+      currentInput.dataset.modeLang = 'EN';
       container.innerHTML = "";
       englishLetters.forEach((text, i) => {
         addButtonOperation({
@@ -382,6 +391,44 @@ const simpleInputKeyboard = (function () {
         });
       });
     };
+    container.appendChild(btn);
+  }
+
+  const turnLetterKeyboard = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    img.setAttribute("src", imgsDir + "key.png");
+    btn.style.background = "none";
+    btn.appendChild(img);
+    btn.onclick = () => {
+      switch (currentInput.dataset.modeLang) {
+        case 'BG':
+          container.innerHTML = "";
+          //TODO need to extract this in another function
+          bulgarianLetters.forEach((text, i) => {
+            addButtonOperation({
+              text: text,
+              el: currentInput,
+              container: container,
+              index: i,
+              source: bulgarianLetters,
+            });
+          });
+          return;
+        default:
+          container.innerHTML = "";
+          englishLetters.forEach((text, i) => {
+            addButtonOperation({
+              text: text,
+              el: currentInput,
+              container: container,
+              index: i,
+              source: englishLetters,
+            });
+          });
+          return;
+      }
+    }
     container.appendChild(btn);
   }
 
