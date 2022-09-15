@@ -13,7 +13,9 @@ const simpleInputKeyboard = (function () {
   let imgsDir;
   let lettersCaseUPMode;
   let numbersAndSymbols;
+  let specialChars;
   let language;
+  let emojis;
 
   function initializeConfiguration(settings = {}) {
     let { clsName = 'keyboard',
@@ -59,6 +61,7 @@ const simpleInputKeyboard = (function () {
       "DEL",
       "?123",
       "BG",
+      "\uD83D\uDE38", //cat face emoji
       "SPACE",
       "RETURN",
     ];
@@ -143,6 +146,14 @@ const simpleInputKeyboard = (function () {
     ];
     isDisabled = disableInput;
     language = lang;
+    specialChars = ['~', '`', '|', '·', '√', ''];
+    emojis = {
+      'grinning face with smiling eyes': '\uD83D\uDE01',
+      'face with tears of joy': '\uD83D\uDE02',
+      'smiling face with open mouth': '\uD83D\uDE03',
+      'smiling face with open mouth and smiling eyes': '\uD83D\uDE04',
+      'grinning cat face with smiling eyes': '\uD83D\uDE38'
+    }
   }
 
   const getInputs = () => document.getElementsByClassName(className);
@@ -237,6 +248,9 @@ const simpleInputKeyboard = (function () {
         return;
       case "EN":
         addEnglishKeayboard(el, container);
+        return;
+      case '\uD83D\uDE38': //cat face emoji
+        addEmojisKeyboard(el, container);
         return;
       case 'ABC':
         turnLetterKeyboard(el, container);
@@ -391,6 +405,29 @@ const simpleInputKeyboard = (function () {
         });
       });
     };
+    container.appendChild(btn);
+  }
+
+  const addEmojisKeyboard = (currentInput, container) => {
+    let btn = document.createElement("button");
+    let img = document.createElement("img");
+    let span = document.createElement("span");
+    img.setAttribute("src", imgsDir + "key.png");
+    img.style.zIndex = -1;
+    btn.setAttribute("class", lettersClass + inputNum);
+    btn.style.background = "none";
+    btn.style.textAlign = "center";
+    btn.style.position = "relative";
+    span.style.position = "absolute";
+    span.style.color = "white";
+    span.style.top = "10%";
+    span.style.left = "11%";
+    span.style.fontSize = "1.5rem";
+    span.style.zIndex = 2;
+    span.innerText = '\uD83D\uDE38';
+    btn.appendChild(img);
+    btn.appendChild(span);
+    console.log(Object.entries(emojis));
     container.appendChild(btn);
   }
 
